@@ -29,7 +29,7 @@ describe "Module #3 Summative: Custom Type Tests" do
   let(:hash) {{ :type=>"Point", :coordinates=>[lon0, lat0] }}
   let(:address_hash) {{ :city=>city, :state=>state, :loc=>hash }}
   let(:place_hash) {{ :name=>name, :place=>place }}
-
+  
   context "rq01" do 
     it "Point class created" do
       expect(class_exists?("Point"))
