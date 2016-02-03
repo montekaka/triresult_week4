@@ -6,6 +6,7 @@ class Entrant
 
   embeds_many :results,  as: :parent, class_name: "LegResult", after_add: :update_total  
   embeds_one :race, class_name: 'RaceRef'
+  embeds_one :racer, class_name: 'RacerInfo', as: :parent
 
   default_scope ->{order_by(:"event.o".desc)}
   field :bib, as: :bib, type: Integer
