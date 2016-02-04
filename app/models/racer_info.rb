@@ -12,11 +12,15 @@ class RacerInfo
   validates :first_name, :last_name , presence: true
   validates :gender, inclusion: { in: ["M", "F"] } , presence: true
   validates :birth_year, numericality: {only_integer: true, less_than: Date.today.year} , presence: true
-  #validate :must_in_past
 
-  # def must_in_past
-  # 	if birth_year.present? && birth_year > Date.today.year
-  # 		errors.add(:birth_year, "must in past")
-  # 	end
-  # end
+  ["city","state"].each do |action|
+    define_method("#{action}") do 
+      self.residence ? self.residence.send("#{action}") : nil
+    end
+    define_method("#{action}=") do |name|
+      obj = self.residence ||= Address.new
+      obj.send("#{action}=", name)
+      self.residence=obj
+    end
+  end
 end

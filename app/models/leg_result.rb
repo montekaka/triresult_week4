@@ -7,9 +7,10 @@ class LegResult
   embeds_one :event, as: :parent
   validates :event,  presence: true
   after_initialize :calc_ave
+
   def calc_ave
 	end
-
+	
 	# after_initialize do |doc|
 	# 	doc.calc_ave
 	# end

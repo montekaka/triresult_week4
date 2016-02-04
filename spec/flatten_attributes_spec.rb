@@ -42,7 +42,7 @@ describe "Module #3 Summative: Implement Attribute Delegation" do
       expect(@r.info.birth_year).to eql(@r.birth_year).and eql(1959)
       # test validation and saving
       expect(@r.validate).to be true
-      expect(@r.save).to be true
+      expect(@r.save).to be true    
       expect(doc = Racer.find(@r.id).attributes).to_not be_nil
       expect(doc["info"]["fn"]).to eql "athing"
       expect(doc["info"]["ln"]).to eql "three"
@@ -255,6 +255,7 @@ describe "Module #3 Summative: Implement Attribute Delegation" do
 
     it "Entant has methods to flatten access to result secs and update total secs" do
       # Use entrant from previous test and assign swim_secs, t1_secs, etc (TEST)
+      byebug
       @entrant.swim_secs=1000
       @entrant.t1_secs=100
       @entrant.bike_secs=3000
