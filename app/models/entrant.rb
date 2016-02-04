@@ -8,8 +8,10 @@ class Entrant
   embeds_one :race, class_name: 'RaceRef', autobuild: true
   embeds_one :racer, class_name: 'RacerInfo', as: :parent, autobuild: true
 
-
   default_scope ->{order_by(:"event.o".desc)}
+  scope :upcoming, ->{where(:'race.date'.gte => Date.current)}
+  scope :past, ->{where(:'race.date'.lt => Date.current)}
+
   field :bib, as: :bib, type: Integer
   field :secs, as: :secs, type: Float
   field :o, as: :overall, type: Placing
