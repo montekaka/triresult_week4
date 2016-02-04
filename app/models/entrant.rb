@@ -27,7 +27,7 @@ class Entrant
   delegate :state, :state=, to: :racer
 
   def update_total(result)
-    if result.secs
+    if result
       self.secs = self.secs.nil? ? result.secs : + self.secs + result.secs
     end
   end
