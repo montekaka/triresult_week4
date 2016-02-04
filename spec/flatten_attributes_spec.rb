@@ -255,7 +255,6 @@ describe "Module #3 Summative: Implement Attribute Delegation" do
 
     it "Entant has methods to flatten access to result secs and update total secs" do
       # Use entrant from previous test and assign swim_secs, t1_secs, etc (TEST)
-      byebug
       @entrant.swim_secs=1000
       @entrant.t1_secs=100
       @entrant.bike_secs=3000

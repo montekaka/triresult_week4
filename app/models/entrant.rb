@@ -4,7 +4,7 @@ class Entrant
 
   store_in collection: "results"
 
-  embeds_many :results,  as: :parent, class_name: "LegResult", after_add: :update_total  
+  embeds_many :results,  as: :parent, class_name: "LegResult", after_add: :update_total , after_remove: :update_total 
   embeds_one :race, class_name: 'RaceRef', autobuild: true
   embeds_one :racer, class_name: 'RacerInfo', as: :parent, autobuild: true
 
@@ -27,8 +27,11 @@ class Entrant
   delegate :state, :state=, to: :racer
 
   def update_total(result)
-    if result
-      self.secs = self.secs.nil? ? result.secs : + self.secs + result.secs
+    self.secs = 0
+    self.results.each do |result|        
+      if result.secs
+        self.secs = self.secs + result.secs
+      end
     end
   end
 
