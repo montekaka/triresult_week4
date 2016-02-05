@@ -4,7 +4,9 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-  resources :racers
+  resources :racers do
+    post "entries" => "racers#create_entry"
+  end
   resources :races
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
