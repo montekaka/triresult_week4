@@ -6,8 +6,19 @@ Rails.application.routes.draw do
   # root 'welcome#index'
   resources :racers do
     post "entries" => "racers#create_entry"
+    #resources :entries
   end
   resources :races
+
+  namespace :api, defaults: {format: 'json'} do 
+    resources :races do 
+      resources :results
+    end
+    resources :racers do 
+      resources :entries
+    end    
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
