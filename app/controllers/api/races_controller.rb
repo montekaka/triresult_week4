@@ -2,6 +2,7 @@ module Api
 	class RacesController < ApplicationController
 		protect_from_forgery with: :null_session
 		before_action :set_race, only: [:show, :edit, :update, :destroy]
+		rescue_from ActiveRecord::RecordInvalid, with: :update
 		def index
 			offset = params[:offset]
 			limit = params[:limit]
@@ -70,6 +71,10 @@ module Api
 	  	@race.destroy
 	  	render :nothing=>true, :status => :no_content
 	  end
+
+		rescue_from Mongoid::Errors::DocumentNotFound do |exception|
+			render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+		end
 
 		private
 	    def set_race
