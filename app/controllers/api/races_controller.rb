@@ -1,6 +1,7 @@
 module Api
 	class RacesController < ApplicationController
 		protect_from_forgery with: :null_session
+		before_action :set_race, only: [:show, :edit, :update, :destroy]
 		def index
 			offset = params[:offset]
 			limit = params[:limit]
@@ -33,12 +34,14 @@ module Api
 		def show			
 			if !request.accept || request.accept == "*/*"
 				render plain: "/api/races/#{params[:id]}"
-			else				
+			else
+				race=Race.find(@race)
+				render json: race			
 			end			
 		end
 		#post
 		def create			
-			name = races_params[:name]			
+			name = race_params[:name]			
 			if !request.accept || request.accept == "*/*"
 				#render plain: :nothing, status: :ok
 				if name
@@ -46,13 +49,35 @@ module Api
 				else
 					render plain: :nothing, status: :ok
 				end
-			else				
+			else
+				race=Race.create(race_params)
+				render json: race, status: :created		
 			end
-		end		
+		end	
+
+	  # PATCH/PUT /races/1
+	  # PATCH/PUT /races/1.json
+	  def update
+	  	Rails.logger.debug("method=#{request.method}")
+	  	@race.update(race_params)
+	  	race = Race.find(@race)
+			render json: race, status: :ok
+	  end
+
+	  # DELETE /races/1
+	  # DELETE /races/1.json	  
+	  def destroy
+	  	@race.destroy
+	  	render :nothing=>true, :status => :no_content
+	  end
+
 		private
+	    def set_race
+	      @race = Race.find(params[:id])
+	    end		
 	    # Never trust parameters from the scary internet, only allow the white list through.
-	    def races_params
-	      params.require(:race).permit(:id,:name)
+	    def race_params
+	      params.require(:race).permit(:id,:name, :date)
 	    end		
 	end
 end
