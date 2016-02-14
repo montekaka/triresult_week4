@@ -2,7 +2,8 @@ module Api
 	class RacesController < ApplicationController
 		protect_from_forgery with: :null_session
 		before_action :set_race, only: [:show, :edit, :update, :destroy]
-		rescue_from ActiveRecord::RecordInvalid, with: :update
+		rescue_from ActiveRecord::RecordInvalid, with: [:update, :show]
+		rescue_from ActionView::MissingTemplate, with: :show
 		def index
 			offset = params[:offset]
 			limit = params[:limit]
@@ -34,11 +35,11 @@ module Api
 		end
 		def show			
 			if !request.accept || request.accept == "*/*"
-				render plain: "/api/races/#{params[:id]}"
+				#render plain: "/api/races/#{params[:id]}"
+				render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
 			else
-				race=Race.find(@race)
-				render json: race			
-			end			
+				render action: :show
+			end		
 		end
 		#post
 		def create			
@@ -73,9 +74,23 @@ module Api
 	  end
 
 		rescue_from Mongoid::Errors::DocumentNotFound do |exception|
-			render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+			# @error_msg = plain: "woops: cannot find race[#{params[:id]}]", status: :not_found			
+			# render @error_msg
+			if !request.accept || request.accept == "*/*"
+				render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+			elsif request.accept == 'application/xml'
+				render :status=>:not_found,
+							 :template=>"api/error_msg_xml",
+							 :locals=>{ :msg=>"woops: cannot find race[#{params[:id]}]"}
+			elsif request.accept == 'application/json'
+				render :status=>:not_found,
+							 :template=>"api/error_msg_json",
+							 :locals=>{ :msg=>"woops: cannot find race[#{params[:id]}]"}				
+			end			
 		end
-
+		rescue_from ActionView::MissingTemplate do |exception|
+			render plain: "woops: we do not support that content-type[#{request.accept}]", status: 415
+		end
 		private
 	    def set_race
 	      @race = Race.find(params[:id])

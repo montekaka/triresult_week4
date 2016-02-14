@@ -53,7 +53,7 @@ feature "Module #4 Representations", :type => :routing do
       expect(test_race = Race.create(:name=>"First Race", :date=>Date.current)).to_not be_nil
       page.driver.header('Accept', 'application/json')  
       page.driver.get("/api/races/#{test_race.id}")
-      expect(page.status_code).to eql(200)
+      expect(page.status_code).to eql(200)      
       expect(page.response_headers["Content-Type"]).to include("application/json")
       expect(hash = JSON.parse(page.body)).to_not be_nil
       expect(hash["name"]).to eql(test_race.name)

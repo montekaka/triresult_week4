@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
   resources :races
 
-  namespace :api, defaults: {format: 'json'} do 
+  namespace :api do 
     resources :races do 
       resources :results
     end
