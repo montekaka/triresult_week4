@@ -1,7 +1,7 @@
 module Api
 	class RacesController < ApplicationController
 		protect_from_forgery with: :null_session
-		before_action :set_race, only: [:show, :edit, :update, :destroy]
+		#before_action :set_race, only: [:show, :edit, :update, :destroy]
 		rescue_from ActiveRecord::RecordInvalid, with: [:update, :show]
 		rescue_from ActionView::MissingTemplate, with: :show
 		def index
@@ -35,31 +35,35 @@ module Api
 		end
 		def show			
 			if !request.accept || request.accept == "*/*"
-				#render plain: "/api/races/#{params[:id]}"
-				render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
+				render plain: "/api/races/#{params[:id]}"
+				#render plain: "woops: cannot find race[#{params[:id]}]", status: :not_found
 			else
+				set_race
 				render action: :show
 			end		
 		end
 		#post
-		def create			
-			name = race_params[:name]			
-			if !request.accept || request.accept == "*/*"
-				#render plain: :nothing, status: :ok
-				if name
-					render plain: name
+		def create
+			Rails.logger.debug("Accept:#{request.accept}")
+			name = race_params[:name]
+			if !request.accept || request.accept == "*/*"				
+				if params && params[:race] && params[:race][:name]
+					render plain: "#{params[:race][:name]}", status: :ok
 				else
 					render plain: :nothing, status: :ok
 				end
 			else
-				race=Race.create(race_params)
-				render json: race, status: :created		
+				race=Race.create(race_params)			
+				if race.save	
+					render plain: "#{params[:race][:name]}", status: :created
+				end
 			end
 		end	
 
 	  # PATCH/PUT /races/1
 	  # PATCH/PUT /races/1.json
 	  def update
+	  	set_race
 	  	Rails.logger.debug("method=#{request.method}")
 	  	@race.update(race_params)
 	  	race = Race.find(@race)
@@ -69,6 +73,7 @@ module Api
 	  # DELETE /races/1
 	  # DELETE /races/1.json	  
 	  def destroy
+	  	set_race
 	  	@race.destroy
 	  	render :nothing=>true, :status => :no_content
 	  end
@@ -97,7 +102,8 @@ module Api
 	    end		
 	    # Never trust parameters from the scary internet, only allow the white list through.
 	    def race_params
-	      params.require(:race).permit(:id,:name, :date)
+	      #params.require(:race).permit(:id,:name, :date)
+	      params.require(:race).permit(:name, :date)
 	    end		
 	end
 end

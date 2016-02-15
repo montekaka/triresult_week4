@@ -1,5 +1,6 @@
 module Api
 	class EntriesController < ApplicationController
+		protect_from_forgery with: :null_session
 		def index
 			if !request.accept || request.accept == "*/*"
 				render plain: "/api/racers/#{params[:racer_id]}/entries"

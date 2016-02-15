@@ -37,7 +37,7 @@ feature "Module #4 Resource Implementation (JSON)", :type => :routing do
       page.driver.header('Accept', 'application/json')  
       page.driver.get("/api/races/#{race.id}/results/#{entrant.id}")
       expect(page.status_code).to eql(200)
-      expect(page.response_headers["Content-Type"]).to include("application/json")
+      expect(page.response_headers["Content-Type"]).to include("application/json")      
       expect(hash = JSON.parse(page.body)).to_not be_nil
       expect(hash["first_name"]).to eql(entrant.first_name)      
       expect(hash["last_name"]).to eql(entrant.last_name)
