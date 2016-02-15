@@ -45,17 +45,17 @@ module Api
 		#post
 		def create
 			Rails.logger.debug("Accept:#{request.accept}")
-			name = race_params[:name]
+			#name = race_params[:name]
 			if !request.accept || request.accept == "*/*"				
-				if params && params[:race] && params[:race][:name]
-					render plain: "#{params[:race][:name]}", status: :ok
+				if !params[:race].nil?
+					render plain: params[:race][:name]
 				else
 					render plain: :nothing, status: :ok
 				end
-			else
-				race=Race.create(race_params)			
-				if race.save	
-					render plain: "#{params[:race][:name]}", status: :created
+			else				
+				if !params[:race].nil?
+					race=Race.create(race_params)
+					render plain: race_params[:name], status: :created
 				end
 			end
 		end	
